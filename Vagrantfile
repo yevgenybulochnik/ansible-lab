@@ -30,9 +30,19 @@ end
 nodes  = [
   VM.new(
     hostname: 'ansiblehost',
-    cpus: '2',
-    memory: '2048',
-    groups: ['roletest']
+    groups: ['roletest', 'common']
+  ),
+  VM.new(
+    hostname: 'ansiblehost2',
+    groups: ['roletest', 'common']
+  ),
+  VM.new(
+    hostname: 'ansiblehost3',
+    groups: ['roletest', 'database']
+  ),
+  VM.new(
+    hostname: 'ansiblehost4',
+    groups: ['random']
   ),
 ]
 
@@ -42,7 +52,7 @@ Vagrant.configure("2") do |config|
     config.hostmanager.enabled = true
     config.hostmanager.manage_host = true
   end
-  groups = {}
+  groups = { "all:vars" => {"ansible_python_interpreter" => "/usr/bin/python3"}}
   nodes.each_with_index do |node, i|
     config.vm.define node.hostname do |node_config|
       node_config.vm.box = node.box
