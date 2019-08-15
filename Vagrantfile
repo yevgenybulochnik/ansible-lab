@@ -30,19 +30,7 @@ end
 nodes  = [
   VM.new(
     hostname: 'ansiblehost',
-    groups: ['roletest', 'common']
-  ),
-  VM.new(
-    hostname: 'ansiblehost2',
-    groups: ['roletest', 'common']
-  ),
-  VM.new(
-    hostname: 'ansiblehost3',
-    groups: ['roletest', 'database']
-  ),
-  VM.new(
-    hostname: 'ansiblehost4',
-    groups: ['random']
+    groups: ['roletest']
   ),
 ]
 
