@@ -1,0 +1,16 @@
+---
+- name: Add new user {{ username }}
+  user:
+    name: "{{ username }}"
+    state: present
+
+- name: Check for PSWDLESS sudo file
+  stat:
+    path: "/etc/sudoers.d/{{ username }}"
+  register: sudoers_enabled
+
+- name: Add PSWDLESS Sudo for {{ username }}
+  template:
+    src: sudoers.j2
+    dest: "/etc/sudoers.d/{{ username }}"
+  when: sudoers_enabled.stat.exists == False
