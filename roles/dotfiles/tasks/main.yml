@@ -1,0 +1,15 @@
+---
+- name: "Get {{ username }} dotfiles, repo: {{ dotfiles }}"
+  git:
+    repo: "{{ dotfiles }}"
+    version: master
+    dest: "/home/{{ username }}/dotfiles"
+  become_user: "{{ username }}"
+
+- name: Install dotfiles
+  shell: ./install.sh
+  args:
+    chdir: "/home/{{ username }}/dotfiles"
+    creates: "/home/{{ username }}/.vimrc"
+  become_user: "{{ username }}"
+  when: install_dotfiles is defined and install_dotfiles
