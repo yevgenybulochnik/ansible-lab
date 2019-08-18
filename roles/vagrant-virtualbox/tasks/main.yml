@@ -1,0 +1,38 @@
+---
+- name: "Download and install vagrant deb version {{ vagrant_ver }}"
+  apt:
+    deb: "https://releases.hashicorp.com/vagrant/{{ vagrant_ver }}/vagrant_{{ vagrant_ver }}_x86_64.deb"
+
+#- name: "Add deb source for virtualbox {{ ansible_distribution_release }}"
+  #apt_repository:
+    #repo: "deb https://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib"
+    #state: present
+
+#- name: Add virtualbox apt signing key 1
+  #apt_key:
+    #url: https://www.virtualbox.org/download/oracle_vbox_2016.asc
+    #state: present
+
+#- name: Add virtualbox apt signing key 2
+  #apt_key:
+    #url: https://www.virtualbox.org/download/oracle_vbox.asc
+    #state: present
+
+#- name: Install latest virtualbox
+  #apt:
+    #name: virtualbox-6.0
+    #state: present
+    #update_cache: yes
+
+- name: Install virtualbox deps
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+      - dkms
+
+- name: "Download and install virtualbox 6.0.10 deb version for {{ ansible_distribution_release }}"
+  apt:
+    deb: "https://download.virtualbox.org/virtualbox/6.0.10/virtualbox-6.0_6.0.10-132072~Ubuntu~{{ ansible_distribution_release }}_amd64.deb"
