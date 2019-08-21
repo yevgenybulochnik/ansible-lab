@@ -1,0 +1,42 @@
+---
+- name: Get Docker dependencies
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg-agent
+    - software-properties-common
+
+- name: Add Docker gpg key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker apt repo
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    state: present
+
+- name: Check for latest docker-compose github release
+  uri:
+    url: https://api.github.com/repos/docker/compose/releases/latest
+    return_content: true
+  register: json_response
+
+- name: Set docker-compose version, system and architecture
+  vars:
+    regex: ".*{{ ansible_system }}-{{ ansible_userspace_architecture }}$"
+  set_fact:
+    ver: "{{ json_response.json.name }}"
+    binary_file: "{{ json_response.json.assets | map(attribute='name') | map('regex_search', regex) | select('string') | list | first }}"
+
+- name: Install latest docker-compose
+  get_url:
+    url : https://github.com/docker/compose/releases/download/{{ ver }}/{{ binary_file }}
+    dest: /usr/local/bin/docker-compose
+    mode: 'o+x'
