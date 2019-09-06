@@ -30,10 +30,13 @@ end
 nodes  = [
   VM.new(
     hostname: 'master1',
+    cpus: '2',
+    memory: '2048',
     groups: ['masters']
   ),
   VM.new(
     hostname: 'worker1',
+    memory: '2048',
     groups: ['workers']
   ),
   VM.new(
