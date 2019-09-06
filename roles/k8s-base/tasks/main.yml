@@ -1,0 +1,67 @@
+---
+- name: Install packages that allow apt to be used over HTTPs
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg-agent
+    - software-properties-common
+
+- name: Remove swapfile from /etc/fstab
+  mount:
+    name: "{{ item  }}"
+    fstype: swap
+    state: absent
+  with_items:
+    - swap
+    - none
+
+- name: Disable swap
+  command: swapoff -a
+
+- name: Add an apt signing key for Kubernetes
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: Adding apt repository for Kubernetes
+  apt_repository:
+    repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+    filename: kubernetes.list
+
+- name: Install Kubernetes binaries
+  apt:
+    name: "{{ packages  }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+    - kubelet
+    - kubeadm
+    - kubectl
+
+#- name: Get machine ip address
+  #shell: "ifconfig enp0s8 | grep Mask | awk '{print $2}' | cut -f2 -d:"
+  #register: node_ip
+
+#- set_fact:
+    #node_ip: "{{ node_ip.stdout }}"
+
+#- debug: var=node_ip
+
+#- name: Configure node ip
+  #lineinfile:
+    #path: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+    #line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
+
+- name: Restart kubelet
+  service:
+    name: kubelet
+    daemon_reload: yes
+    state: restarted
