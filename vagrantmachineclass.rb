@@ -31,12 +31,13 @@ class VM
     end
   end
 
-  attr_accessor :hostname, :box, :cpus, :memory, :groups, :aliases
+  attr_accessor :hostname, :box, :cpus, :bridge_network, :memory, :groups, :aliases
 
-  def initialize(options ={})
+  def initialize(options = {})
     self.hostname = options[:hostname]
     self.box = options[:box] || 'ubuntu/xenial64'
     self.cpus = options[:cpus] || '1'
+    self.bridge_network = options[:bridge_network] || false
     self.memory = options[:memory] || '512'
     self.groups = options[:groups] || ['roletest']
     self.aliases = options[:aliases] || %w()

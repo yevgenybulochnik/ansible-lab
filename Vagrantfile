@@ -19,6 +19,9 @@ Vagrant.configure("2") do |config|
       node_config.vm.box = node.box
       node_config.vm.hostname = node.hostname
       node_config.vm.network :private_network, ip: "172.17.64.#{i + 100}"
+      if node.bridge_network
+        node_config.vm.network :public_network
+      end
       node_config.hostmanager.aliases = node.aliases
       node_config.vm.provider :virtualbox do |vbox|
         vbox.name = node.hostname
