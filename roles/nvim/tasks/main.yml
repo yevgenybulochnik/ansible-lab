@@ -1,0 +1,16 @@
+---
+- name: Check for latest Neovim release
+  uri:
+    url: https://api.github.com/repos/neovim/neovim/releases/latest
+    return_content: true
+  register: json_response
+
+- name: Set Neovim version
+  set_fact:
+    neovim_release_url: "{{ json_response.json.assets | selectattr('name', 'equalto', 'nvim.appimage') | map(attribute='browser_download_url') | list | first }}"
+
+- name: Install latest Neovim release {{ neovim_release_url }}
+  get_url:
+    url: "{{ neovim_release_url }}"
+    dest: /usr/local/bin/nvim
+    mode: 'o+x'
