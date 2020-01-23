@@ -1,0 +1,11 @@
+---
+- name: Install zsh
+  apt:
+    name: zsh
+    state: present
+    update_cache: yes
+
+- name: Set default shell to zsh
+  user:
+    name: "{{ username }}"
+    shell: /bin/zsh
