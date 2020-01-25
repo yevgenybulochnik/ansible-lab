@@ -3,6 +3,7 @@ require './vagrantmachineclass'
 nodes  = [
   VM.new(
     hostname: 'ansiblehost',
+    box: 'ubuntu/bionic64'
   ),
 ]
 
