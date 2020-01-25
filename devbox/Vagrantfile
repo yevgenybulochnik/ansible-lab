@@ -1,9 +1,9 @@
-require './vagrantmachineclass'
+require '../vagrantmachineclass'
 
 nodes  = [
   VM.new(
     hostname: 'ansiblehost',
-    box: 'ubuntu/bionic64'
+    box: 'ubuntu/bionic64',
   ),
 ]
 
