@@ -1,0 +1,8 @@
+---
+- name: Clone pyenv repo into ./pyenv
+  git:
+    repo: https://github.com/pyenv/pyenv
+    dest: /home/{{ username }}/.pyenv
+    version: master
+  become_user: "{{ username }}"
+  when: username is defined
