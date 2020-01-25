@@ -1,0 +1,20 @@
+---
+- name: Add kcli apt key
+  apt_key:
+    url: https://packagecloud.io/karmab/kcli/gpgkey
+    state: present
+
+- name: Add kcli apt repo
+  apt_repository:
+    repo: deb [trusted=yes] https://packagecloud.io/karmab/kcli/ubuntu/ cosmic main
+    state: present
+
+- name: Install kcli and deps
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - python3-distutils
+      - genisoimage
+      - python3-kcli
