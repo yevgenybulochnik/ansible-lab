@@ -1,0 +1,22 @@
+---
+- name: Check node version
+  shell: node --version | grep -oP '\d\d'
+  register: node_version
+  changed_when: False
+  ignore_errors: True
+  failed_when: no
+
+- block:
+  - name: Get node.js version 13
+    get_url:
+      url: https://deb.nodesource.com/setup_13.x
+      dest: /tmp/
+  - name: Execute node setup
+    command: bash /tmp/setup_13.x
+  when: node_version.stdout != "13" or node_version is failed
+
+- name: Install node
+  apt:
+    name: nodejs
+    state: latest
+    update_cache: yes
