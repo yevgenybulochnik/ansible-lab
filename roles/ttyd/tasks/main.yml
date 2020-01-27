@@ -1,0 +1,17 @@
+---
+- name: Check for latest ttyd release
+  uri:
+    url: https://api.github.com/repos/tsl0922/ttyd/releases/latest
+    return_content: true
+  register: json_response
+
+- name: Set ttyd version
+  set_fact:
+    ttyd_release_url: "{{ json_response.json.assets | selectattr('name', 'equalto', 'ttyd_linux.x86_64') | map(attribute='browser_download_url') | list | first }}"
+
+- name: Install latest ttyd release {{ ttyd_release_url }}
+  get_url:
+    url: "{{ ttyd_release_url }}"
+    dest: /usr/local/bin/ttyd
+    mode: 'o+x'
+
