@@ -15,3 +15,8 @@
     dest: /usr/local/bin/ttyd
     mode: 'o+x'
 
+- name: Install build deps for ttyd
+  include: build_setup.yml
+  when:
+    - username is defined
+    - ttyd_build_deps|default(false)
