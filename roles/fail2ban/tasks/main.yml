@@ -1,0 +1,13 @@
+---
+- name:
+  apt:
+    name: fail2ban
+    state: present
+    update_cache: True
+
+- name: Copy local jail
+  copy:
+    src: ../templates/jail.local
+    dest: "/etc/fail2ban/"
+  notify:
+    - restart fail2ban
