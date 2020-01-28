@@ -1,0 +1,80 @@
+---
+- name: Install Apache2
+  apt:
+    name: apache2
+    state: present
+    update_cache: True
+
+- name: Enable modules
+  apache2_module:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - proxy
+    - proxy_http
+    - proxy_wstunnel
+    - rewrite
+    - ssl
+  notify:
+    - restart apache2
+
+- block:
+  - name: Create SSL Dir
+    file:
+      path: /etc/apache2/ssl
+      state: directory
+  - name: Generate Cert
+    shell: openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt -subj "/C=US/ST=OR/L=Portland/O= /OU= /CN= "
+    args:
+      creates: /etc/apache2/ssl/apache.crt
+  when: ssl_cert == "self_signed" and ssl_cert is defined
+
+- name: Check for default apache sites
+  stat:
+    path: "/etc/apache2/{{ item }}"
+  register: default_sites
+  with_items:
+    - sites-available/000-default.conf
+    - sites-available/default-ssl.conf
+    - sites-enabled/000-default.conf
+
+- name: Remove apache default sites
+  file:
+    path: "{{ item.stat.path }}"
+    state: absent
+  with_items: "{{ default_sites.results }}"
+  when: item.stat.exists == True
+  loop_control:
+    label: "{{ item.item }} Exists: {{ item.stat.exists | string }}"
+
+- name: Generate VirtualHosts
+  template:
+    src: "{{ item }}"
+    dest: "/etc/apache2/sites-available/{{ item | basename | regex_replace('.conf', '')}}.{{ domain }}.conf"
+  with_fileglob:
+    - "../templates/*.conf"
+
+- block:
+  - name: Get all VirtualHosts
+    command: ls /etc/apache2/sites-available/
+    register: sites
+    changed_when: False
+  - name: Enable All sites
+    command: "a2ensite {{ item }}"
+    args:
+      creates: "/etc/apache2/sites-enabled/{{ item }}"
+    with_items:
+      - "{{sites.stdout_lines}}"
+    notify:
+      - restart apache2
+
+- name: Add username:password to .htpasswd
+  copy:
+    dest: "/etc/apache2/.htpasswd"
+    content: |
+      {{ username }}:{{ web_pass }}
+
+- name: Serve base website
+  copy:
+    src: ../templates/index.html
+    dest: "/var/www/{{ domain }}/"
