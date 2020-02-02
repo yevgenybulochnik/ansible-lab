@@ -5,6 +5,7 @@
     - zsh
     - nvim
     - dotfiles
+    - ripgrep
     - ttyd
     - pyenv
     - docker
