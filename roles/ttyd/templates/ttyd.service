@@ -1,0 +1,14 @@
+[Unit]
+Description=TTYD systemd service
+After=network.target
+StartLimitIntervalSec=0
+Requires=apache2.service
+
+[Service]
+Type=simple
+User={{ username }}
+WorkingDirectory=/home/{{ username }}
+ExecStart=/usr/local/bin/ttyd -p 8080 zsh
+
+[Install]
+WantedBy=multi-user.target apache2.service

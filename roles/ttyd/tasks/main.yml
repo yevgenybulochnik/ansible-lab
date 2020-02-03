@@ -20,3 +20,9 @@
   when:
     - username is defined
     - ttyd_build_deps|default(false)
+
+- name: Setup ttyd systemd service
+  include: sysdservice.yml
+  when:
+    - username is defined
+    - ttyd_sysd_service|default(false)

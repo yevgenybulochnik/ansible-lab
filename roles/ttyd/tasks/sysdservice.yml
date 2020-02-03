@@ -1,0 +1,11 @@
+---
+- name: Add ttyd systemd service unit from template
+  template:
+    src: ttyd.service
+    dest: /etc/systemd/system/ttyd.service
+
+- name: Enable ttyd service
+  systemd:
+    name: ttyd.service
+    daemon_reload: yes
+    enabled: yes
