@@ -3,6 +3,7 @@
   git:
     repo: "{{ dotfiles }}"
     version: master
+    update: no
     dest: "/home/{{ username }}/dotfiles"
   become_user: "{{ username }}"
 

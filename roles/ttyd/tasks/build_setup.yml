@@ -19,6 +19,7 @@
   git:
     repo: https://github.com/tsl0922/ttyd
     version: master
+    update: no
     dest: "/home/{{ username }}/ttyd-repo"
   become_user: "{{ username }}"
 
