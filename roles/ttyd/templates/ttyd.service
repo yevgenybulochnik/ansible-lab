@@ -8,7 +8,7 @@ Requires=apache2.service
 Type=simple
 User={{ username }}
 WorkingDirectory=/home/{{ username }}
-ExecStart=/usr/local/bin/ttyd -p 8080 zsh
+ExecStart=/usr/local/bin/ttyd -i lo -p 8080 zsh
 
 [Install]
 WantedBy=multi-user.target apache2.service
