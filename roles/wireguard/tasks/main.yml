@@ -8,3 +8,24 @@
     name: wireguard
     state: present
     update_cache: yes
+
+- name: Generate wireguard public and private keys
+  shell: wg genkey | tee privatekey | wg pubkey > publickey
+  args:
+    chdir: /etc/wireguard
+    creates: /etc/wireguard/privatekey
+
+- name: Add wireguard conf
+  template:
+    src: wg0.conf
+    dest: /etc/wireguard
+
+- name: Add private key to wg0.conf
+  shell: sed -E -i "s@<.+>@$(cat privatekey)@" wg0.conf
+  args:
+    chdir: /etc/wireguard
+
+- name: Create wireguard interface
+  shell: wg-quick up wg0
+  args:
+    chdir: /etc/wireguard
