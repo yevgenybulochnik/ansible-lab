@@ -1,0 +1,11 @@
+[Interface]
+Address = 10.0.0.1
+PrivateKey = <server's privatekey>
+ListenPort = 51820
+
+{% for key in client_keys %}
+[Peer]
+PublicKey = {{ key }}
+AllowedIPs = 10.0.0.{{ loop.index + 1 }}
+
+{% endfor %}

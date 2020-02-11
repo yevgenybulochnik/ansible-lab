@@ -17,8 +17,10 @@
 
 - name: Add wireguard conf
   template:
-    src: wg0.conf
-    dest: /etc/wireguard
+    src: wg0.conf.j2
+    dest: /etc/wireguard/wg0.conf
+  vars:
+    client_keys: "{{ lookup('file', 'publicKeys').splitlines() }}"
 
 - name: Add private key to wg0.conf
   shell: sed -E -i "s@<.+>@$(cat privatekey)@" wg0.conf
