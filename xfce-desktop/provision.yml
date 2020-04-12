@@ -1,0 +1,11 @@
+---
+- hosts: xfce-xrdp
+  roles:
+    - xfce
+    - xrdp
+
+  post_tasks:
+    - name: Change ubuntu default password
+      user:
+        name: ubuntu
+        password: "{{ password | string | password_hash('sha512') }}"

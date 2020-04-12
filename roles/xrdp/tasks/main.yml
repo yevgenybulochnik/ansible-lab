@@ -1,0 +1,13 @@
+---
+- name:
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+      - xorg
+      - dbus-x11
+      - x11-xserver-utils
+      - xrdp
+
